@@ -5,6 +5,26 @@ using System.Linq;
 
 namespace PrototypePattern.UnitTests
 {
+    [TestClass]
+    public class PhoneTests
+    {
+        [TestMethod]
+        public void CreateCopy_Phone_ShouldBeDeepCopyOfPhone()
+        {
+            // Arrange
+            Batery batery = new Batery { Capacity = 3000, Level = 0.5f };
+            Phone phone = new Phone { Name = "Phone1", Batery = batery };
+
+            // Act
+            Phone copyPhone = (Phone) phone.Clone();
+
+            // Assert
+            Assert.IsFalse(ReferenceEquals(phone, copyPhone));
+            Assert.IsFalse(ReferenceEquals(phone.Batery, copyPhone.Batery));
+        }
+
+    }
+
     // PM> Install-Package FluentAssertions
 
     [TestClass]
