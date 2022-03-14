@@ -61,6 +61,7 @@ namespace PrototypePattern
             }
         }
 
+        // Serializacja json
         public static T DeepCloneJson<T>(this T self)
         {
             string json = JsonSerializer.Serialize<T>(self);
