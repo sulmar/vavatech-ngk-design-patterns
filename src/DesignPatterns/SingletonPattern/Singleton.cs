@@ -8,18 +8,23 @@
         {
         }
 
+        private static object sync = new object();
+
         private static T _instance;
 
         public static T Instance
         {
             get
             {
-                if (_instance == null)
+                lock (sync)
                 {
-                    _instance = new T();
-                }
+                    if (_instance == null)
+                    {
+                        _instance = new T();
+                    }
 
-                return _instance;
+                    return _instance;
+                }
             }
         }
     }
