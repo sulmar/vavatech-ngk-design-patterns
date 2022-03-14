@@ -34,7 +34,6 @@ namespace PrototypePattern.UnitTests
         public void CreateCopy_Invoice_ShouldBeCopyOfInvoice()
         {
             // Arrange
-            InvoiceService invoiceService = new InvoiceService();
             Invoice invoice = CreateInvoice();
 
             // Act
