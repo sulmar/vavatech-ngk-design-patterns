@@ -16,9 +16,9 @@ namespace BuilderPattern
 
             //PhoneTest();
 
-            //SalesReportTest();
+            SalesReportTest();
 
-            PersonTest();
+            // PersonTest();
         }
 
         private static void PersonTest()
@@ -36,26 +36,23 @@ namespace BuilderPattern
 
         private static void SalesReportTest()
         {
+            bool hasGenderDetails = true;
+
             FakeOrdersService ordersService = new FakeOrdersService();
             IEnumerable<Order> orders = ordersService.Get();
 
-            SalesReport salesReport = new SalesReport();
+            ISalesReportBuilder salesReportBuilder = new SalesReportBuilder();
+            salesReportBuilder.AddOrders(orders);
+            salesReportBuilder.AddHeader("Raport sprzedaży");
 
-            salesReport.Title = "Raport sprzedaży";
-            salesReport.CreateDate = DateTime.Now;
-            salesReport.TotalSalesAmount = orders.Sum(s => s.Amount);
+            if (hasGenderDetails)
+            {
+                salesReportBuilder.AddGenderDetails();
+            }
 
-            salesReport.GenderDetails = orders
-                .GroupBy(o => o.Customer.Gender)
-                .Select(g => new GenderReportDetail(
-                            g.Key,
-                            g.Sum(x => x.Details.Sum(d => d.Quantity)),
-                            g.Sum(x => x.Details.Sum(d => d.LineTotal))));
+            salesReportBuilder.AddProductDetails();
 
-            salesReport.ProductDetails = orders
-                .SelectMany(o => o.Details)
-                .GroupBy(o => o.Product)
-                .Select(g => new ProductReportDetail(g.Key, g.Sum(p => p.Quantity), g.Sum(p => p.LineTotal)));
+            SalesReport salesReport = salesReportBuilder.Build();
 
             Console.WriteLine(salesReport);
 
@@ -68,6 +65,68 @@ namespace BuilderPattern
         }
 
        
+    }
+
+    // Abstract builder
+    public interface ISalesReportBuilder
+    {
+        void AddOrders(IEnumerable<Order> orders);
+        void AddHeader(string title);
+        void AddGenderDetails();
+        void AddProductDetails();
+
+        // Product
+        SalesReport Build();
+    }
+
+    // Concrete builder
+    public class SalesReportBuilder : ISalesReportBuilder
+    {
+        private SalesReport salesReport; // Product
+
+        private IEnumerable<Order> orders;
+
+        public SalesReportBuilder()
+        {
+            salesReport = new SalesReport();
+        }
+
+        public void AddOrders(IEnumerable<Order> orders)
+        {
+            this.orders = orders;
+        }
+
+        public void AddHeader(string title)
+        {
+            salesReport.Title = title;
+            salesReport.CreateDate = DateTime.Now;
+            salesReport.TotalSalesAmount = orders.Sum(s => s.Amount);
+        }
+
+        public void AddGenderDetails()
+        {
+            salesReport.GenderDetails = orders
+                   .GroupBy(o => o.Customer.Gender)
+                   .Select(g => new GenderReportDetail(
+                               g.Key,
+                               g.Sum(x => x.Details.Sum(d => d.Quantity)),
+                               g.Sum(x => x.Details.Sum(d => d.LineTotal))));
+        }
+
+        public void AddProductDetails()
+        {
+            salesReport.ProductDetails = orders
+              .SelectMany(o => o.Details)
+              .GroupBy(o => o.Product)
+              .Select(g => new ProductReportDetail(g.Key, g.Sum(p => p.Quantity), g.Sum(p => p.LineTotal)));
+
+        }
+        
+        public SalesReport Build()
+        {
+            return salesReport;
+        }
+
     }
 
     public class FakeOrdersService
