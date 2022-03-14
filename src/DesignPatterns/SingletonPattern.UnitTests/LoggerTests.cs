@@ -18,5 +18,20 @@ namespace SingletonPattern.UnitTests
             Assert.AreSame(messageService.logger, printService.logger, "Different instances");
 
         }
+
+        [TestMethod]
+        public void Create_SingletonMessageService_ShouldBeTheInstance()
+        {
+            // Arrange 
+
+            // Act
+            MessageService messageService1 = SingletonMessageService.Instance;
+            MessageService messageService2 = SingletonMessageService.Instance;
+
+            // Assert
+            Assert.AreSame(messageService1, messageService2);
+
+
+        }
     }
 }
