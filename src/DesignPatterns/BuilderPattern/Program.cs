@@ -44,15 +44,28 @@ namespace BuilderPattern
             ISalesReportBuilder salesReportBuilder = new SalesReportBuilder();
             salesReportBuilder.AddOrders(orders);
             salesReportBuilder.AddHeader("Raport sprzedaży");
-
-            if (hasGenderDetails)
-            {
-                salesReportBuilder.AddGenderDetails();
-            }
-
+            salesReportBuilder.AddGenderDetails();
             salesReportBuilder.AddProductDetails();
 
             SalesReport salesReport = salesReportBuilder.Build();
+
+            Console.WriteLine(salesReport);
+
+        }
+
+        // Fluent API
+        private static void FluentSalesReportTest()
+        {
+            FakeOrdersService ordersService = new FakeOrdersService();
+            IEnumerable<Order> orders = ordersService.Get();
+
+            SalesReport salesReport = FluentSalesReportBuilder
+                .Create()
+                .AddOrders(orders)
+                .AddHeader("Raport sprzedaży")
+                .AddGenderDetails()
+                .AddProductDetails()
+                .Build();
 
             Console.WriteLine(salesReport);
 
@@ -77,6 +90,69 @@ namespace BuilderPattern
 
         // Product
         SalesReport Build();
+    }
+
+    public class FluentSalesReportBuilder
+    {
+        private SalesReport salesReport; // Product
+
+        private IEnumerable<Order> orders;
+
+        public static FluentSalesReportBuilder Create()
+        {
+            return new FluentSalesReportBuilder();
+        }
+
+        protected FluentSalesReportBuilder()
+        {
+            salesReport = new SalesReport();
+        }
+
+        public FluentSalesReportBuilder AddOrders(IEnumerable<Order> orders)
+        {
+            this.orders = orders;
+
+            return this;
+        }
+
+        public FluentSalesReportBuilder AddHeader(string title)
+        {
+            salesReport.Title = title;
+            salesReport.CreateDate = DateTime.Now;
+            salesReport.TotalSalesAmount = orders.Sum(s => s.Amount);
+
+            return this;
+        }
+
+        public FluentSalesReportBuilder AddGenderDetails()
+        {
+            salesReport.GenderDetails = orders
+                   .GroupBy(o => o.Customer.Gender)
+                   .Select(g => new GenderReportDetail(
+                               g.Key,
+                               g.Sum(x => x.Details.Sum(d => d.Quantity)),
+                               g.Sum(x => x.Details.Sum(d => d.LineTotal))));
+
+            return this;
+        }
+
+        public FluentSalesReportBuilder AddProductDetails()
+        {
+            salesReport.ProductDetails = orders
+              .SelectMany(o => o.Details)
+              .GroupBy(o => o.Product)
+              .Select(g => new ProductReportDetail(g.Key, g.Sum(p => p.Quantity), g.Sum(p => p.LineTotal)));
+
+            return this;
+
+        }
+
+        public SalesReport Build()
+        {
+            return salesReport;
+        }
+
+
     }
 
     // Concrete builder
