@@ -8,6 +8,7 @@ using System.Xml;
 
 namespace BuilderPattern
 {
+
     class Program
     {
         static void Main(string[] args)
@@ -16,9 +17,11 @@ namespace BuilderPattern
 
             //PhoneTest();
 
-            SalesReportTest();
+            // SalesReportTest();
 
-            // PersonTest();
+            //  PersonTest();
+
+            FluentLazyPersonTest();
         }
 
         private static void PersonTest()
@@ -32,6 +35,34 @@ namespace BuilderPattern
             person.AddSkill("tdd");
 
             Console.WriteLine(person);
+
+
+        }
+
+        private static void FluentLazyPersonTest()
+        {
+            var person = new 
+                LazyPersonBuilder()
+                .Called("Marcin")
+                .WorksAs("developer")
+                .HasSkill("C#")
+                .HasSkill("design-patterns")
+                .HasSkill("tdd")
+                .Build();
+
+
+            Console.WriteLine(person);
+        }
+
+        private static void FluentEagerPersonTest()
+        {
+            var person = new EagerPersonBuilder()
+                .Called("Marcin")
+                .WorksAs("developer")
+                .HasSkill("C#")
+                .HasSkill("design-patterns")
+                .HasSkill("tdd")
+                .Build();
         }
 
         private static void SalesReportTest()
