@@ -10,7 +10,7 @@ namespace AbstractFactoryPattern
         {
             Console.WriteLine("Hello Factory Method Pattern!");
 
-            VisitCalculateAmountTest();
+            // VisitCalculateAmountTest();
 
             PaymentTest();
         }
@@ -19,6 +19,8 @@ namespace AbstractFactoryPattern
 
         private static void PaymentTest()
         {
+            IPaymentViewFactory paymentViewFactory = new PaymentViewFactory();
+
             while (true)
             {
                 Console.Write("Podaj kwotę: ");
@@ -31,23 +33,8 @@ namespace AbstractFactoryPattern
 
                 Payment payment = new Payment(paymentType, totalAmount);
 
-                if (payment.PaymentType == PaymentType.Cash)
-                {
-                    CashPaymentView cashPaymentView = new CashPaymentView();
-                    cashPaymentView.Show(payment);
-                }
-                else
-                if (payment.PaymentType == PaymentType.CreditCard)
-                {
-                    CreditCardPaymentView creditCardView = new CreditCardPaymentView();
-                    creditCardView.Show(payment);
-                }
-                else
-                if (payment.PaymentType == PaymentType.BankTransfer)
-                {
-                    BankTransferPaymentView bankTransferPaymentView = new BankTransferPaymentView();
-                    bankTransferPaymentView.Show(payment);
-                }
+                PaymentView paymentView = paymentViewFactory.Create(paymentType);
+                paymentView.Show(payment);
 
                 string icon = GetIcon(payment);
                 Console.WriteLine(icon);                
@@ -69,34 +56,88 @@ namespace AbstractFactoryPattern
 
         private static void VisitCalculateAmountTest()
         {
+            IVisitFactory visitFactory = new VisitFactory();
+            IConsoleColorFactory consoleColorFactory = ConsoleColorFactoryFactory.Create(Theme.Dark);
+
             while (true)
             {
-                Console.Write("Podaj rodzaj wizyty: (N)FZ (P)rywatna (F)irma: ");
-                string visitType = Console.ReadLine();
+                Console.Write("Podaj rodzaj wizyty: (N)FZ (P)rywatna (F)irma: (T)eleporada");
+                string kind = Console.ReadLine();
 
                 Console.Write("Podaj czas wizyty w minutach: ");
                 if (double.TryParse(Console.ReadLine(), out double minutes))
                 {
                     TimeSpan duration = TimeSpan.FromMinutes(minutes);
 
-                    Visit visit = new Visit(duration, 100);
+                    Visit visit = visitFactory.Create(kind, duration, 100);
 
-                    decimal totalAmount = visit.CalculateCost(visitType);
+                    decimal totalAmount = visit.CalculateCost();
 
-                    if (totalAmount == 0)
-                        Console.ForegroundColor = ConsoleColor.Green;
-                    else
-                       if (totalAmount >= 200)
-                        Console.ForegroundColor = ConsoleColor.Red;
-                    else
-                        Console.ForegroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = consoleColorFactory.Create(totalAmount);
 
-                    Console.WriteLine($"Total amount {totalAmount:C2}");
+                   Console.WriteLine($"Total amount {totalAmount:C2}");
 
                     Console.ResetColor();
                 }
             }
 
+        }
+
+        // Abstract factory
+        public interface IConsoleColorFactory
+        {
+            ConsoleColor Create(decimal value);
+        }
+
+        public class ConsoleColorFactoryFactory
+        {
+            public static IConsoleColorFactory Create(Theme theme)
+            {
+                switch(theme)
+                {
+                    case Theme.Light: return new LightConsoleColorFactory();
+                    case Theme.Dark: return new DarkConsoleColorFactory();
+
+                    default:
+                        throw new NotSupportedException();
+                }
+            }
+        }
+
+        public enum Theme
+        {
+            Light,
+            Dark
+        }
+
+
+        // Concret factory
+        public class LightConsoleColorFactory : IConsoleColorFactory
+        {
+
+            // Product
+            public ConsoleColor Create(decimal value)
+            {
+                if (value == 0) 
+                    return ConsoleColor.Green; 
+                else if (value >= 200) 
+                    return ConsoleColor.Red;
+                else 
+                    return ConsoleColor.White;
+            }
+        }
+
+        public class DarkConsoleColorFactory : IConsoleColorFactory
+        {
+            public ConsoleColor Create(decimal value)
+            {
+                if (value == 0)
+                    return ConsoleColor.DarkGreen;
+                else if (value >= 200)
+                    return ConsoleColor.DarkRed;
+                else
+                    return ConsoleColor.White;
+            }
         }
     }
 }

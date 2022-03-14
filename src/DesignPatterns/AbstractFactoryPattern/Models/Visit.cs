@@ -2,13 +2,83 @@
 
 namespace AbstractFactoryPattern
 {
-    public class Visit
+    // Fabryka abstrakcyjna
+    public interface IVisitFactory
+    {
+        Visit Create(string kind, TimeSpan duration, decimal pricePerHour);
+    }
+
+    // Fabryka konkretna 
+    public class VisitFactory : IVisitFactory
+    {
+        public Visit Create(string kind, TimeSpan duration, decimal pricePerHour)
+        {
+            switch(kind)
+            {
+                case "N": return new NFZVisit(duration, pricePerHour);
+                case "P": return new PrivateVisit(duration, pricePerHour);
+                case "F": return new CompanyVisit(duration, pricePerHour);
+                case "T": return new TeleVisit(duration, pricePerHour);
+
+                default:
+                    throw new NotSupportedException();
+            }
+        }
+    }
+
+    // Konkretny produkt
+    public class NFZVisit : Visit
+    {
+        public NFZVisit(TimeSpan duration, decimal pricePerHour) 
+            : base(duration, 0)
+        {
+
+        }
+    }
+
+    // Konkretny produkt
+    public class PrivateVisit : Visit
+    {
+        public PrivateVisit(TimeSpan duration, decimal pricePerHour) 
+            : base(duration, pricePerHour)
+        {
+        }
+    }
+
+    // Konkretny produkt
+    public class CompanyVisit : Visit
+    {
+        private const decimal companyDiscountPercentage = 0.9m;
+
+        public CompanyVisit(TimeSpan duration, decimal pricePerHour) : base(duration, pricePerHour)
+        {
+        }
+
+        public override decimal CalculateCost()
+        {
+            return base.CalculateCost() * companyDiscountPercentage;
+        }
+
+    }
+
+    public class TeleVisit : Visit
+    {
+        public TeleVisit(TimeSpan duration, decimal pricePerHour) : base(duration, pricePerHour)
+        {
+        }
+
+        public override decimal CalculateCost()
+        {
+            return 100;
+        }
+    }
+
+    // Abstrakcyjny produkt
+    public abstract class Visit
     {
         public DateTime VisitDate { get; set; }
         public TimeSpan Duration { get; set; }
         public decimal PricePerHour { get; set; }
-
-        private const decimal companyDiscountPercentage = 0.9m;
 
         public Visit(TimeSpan duration, decimal pricePerHour)
         {
@@ -17,24 +87,9 @@ namespace AbstractFactoryPattern
             PricePerHour = pricePerHour;
         }
 
-        public decimal CalculateCost(string kind)
+        public virtual decimal CalculateCost()
         {
-            decimal cost = 0;
-
-            if (kind == "N")
-            {
-                cost = 0;
-            }
-            else if (kind == "P")
-            {
-                cost = (decimal)Duration.TotalHours * PricePerHour;
-            }
-            else if (kind == "F")
-            {
-                cost = (decimal)Duration.TotalHours * PricePerHour * companyDiscountPercentage;
-            }
-
-            return cost;
+            return (decimal)Duration.TotalHours * PricePerHour;
         }
     }
 }
