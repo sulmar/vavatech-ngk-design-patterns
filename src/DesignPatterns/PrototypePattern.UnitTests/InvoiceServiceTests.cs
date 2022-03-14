@@ -18,7 +18,8 @@ namespace PrototypePattern.UnitTests
             Invoice invoice = CreateInvoice();
 
             // Act
-            var copyInvoice = invoiceService.CreateCopy(invoice, "FA 2");
+            var copyInvoice = (Invoice) invoice.Clone();
+            copyInvoice.Number = "FA 2";
 
             // Assert
             copyInvoice.Should().NotBeSameAs(invoice);
@@ -35,6 +36,8 @@ namespace PrototypePattern.UnitTests
             detailsReferenceEquals.All(x => x).Should().BeFalse();
 
             productsReferenceEquals.All(x => x).Should().BeTrue();
+
+            copyInvoice.Number.Should().Be("FA 2");
 
 
         }
