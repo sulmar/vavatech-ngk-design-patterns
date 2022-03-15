@@ -11,11 +11,13 @@ namespace AdapterPattern
         {
             Console.WriteLine("Hello Adapter Pattern!");
 
-            MotorolaRadioTest();
-
-            HyteriaRadioTest();
+            RadioAdapterTest();
 
             CrystalReportTest();
+
+            string radioType = "motorola";
+
+           
 
         }
 
@@ -64,21 +66,31 @@ namespace AdapterPattern
             rpt.ExportToDisk(ReportDocument.ExportFormatType.PortableDocFormat, "report1.pdf");
         }
 
-        private static void MotorolaRadioTest()
+        private static void RadioAdapterTest()
         {
-            MotorolaRadio radio = new MotorolaRadio();
-            radio.PowerOn("1234");
-            radio.SelectChannel(10);
-            radio.Send("Hello World!");
-            radio.PowerOff();
+            Console.WriteLine("Podaj typ radia: (M)otorola (H)ytera");
+
+            string radioType = Console.ReadLine();
+
+            IRadioAdapter radio = RadioAdapterFactory.Create(radioType);
+
+            radio.Send(10, "Hello World!");
         }
 
-        private static void HyteriaRadioTest()
+    }
+
+    public class RadioAdapterFactory
+    {
+        public static IRadioAdapter Create(string radioType)
         {
-            HyteraRadio radio = new HyteraRadio();
-            radio.Init();
-            radio.SendMessage(10, "Hello World!");
-            radio.Release();
+            switch(radioType)
+            {
+                case "M": return new MotorolaRadioAdapter("1234");
+                case "H": return new HyteraRadioAdapter();
+
+                default:
+                    throw new NotSupportedException();
+            }
         }
     }
 
