@@ -11,6 +11,8 @@ namespace AdapterPattern
         {
             Console.WriteLine("Hello Adapter Pattern!");
 
+            BateryAdapterTest();
+
             RadioAdapterTest();
 
             CrystalReportTest();
@@ -19,6 +21,13 @@ namespace AdapterPattern
 
            
 
+        }
+
+        private static void BateryAdapterTest()
+        {
+            ITarget radio = new IPhoneAdapter();
+
+            Console.WriteLine(radio.GetBateryLevel());
         }
 
 
