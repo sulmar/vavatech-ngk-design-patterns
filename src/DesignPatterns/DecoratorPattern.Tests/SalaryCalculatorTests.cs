@@ -3,6 +3,40 @@ using System;
 
 namespace DecoratorPattern.UnitTests
 {
+
+    [TestClass]
+    public class NameAttributeTests
+    {
+        [TestMethod]
+        public void Female_NameAttribute_ShouldBeReturnsDescription()
+        {
+            // Arrange
+            Female female = new Female();
+
+            // Act
+            NameAttribute nameAttribute = (NameAttribute) Attribute.GetCustomAttribute(typeof(Female), typeof(NameAttribute));
+
+            // Assert
+            Assert.AreEqual("Kobieta", nameAttribute.Description);
+
+        }
+
+        [TestMethod]
+        public void Gender_NameAttribute_ShouldBeReturnsDescription()
+        {
+            // Arrange
+            Gender gender = new Gender();
+
+            // Act
+            var attributes = typeof(Gender).GetCustomAttributes(false);
+
+            // Assert
+            // Assert.AreEqual("Kobieta", nameAttribute.Description);
+
+        }
+
+    }
+
     [TestClass]
     public class SalaryCalculatorTests
     { 

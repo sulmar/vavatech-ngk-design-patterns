@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 using Force.DeepCloner;
 
 namespace PrototypePattern
-{
+{    
     public class Phone : ICloneable
     {
         public string Name { get; set; }
