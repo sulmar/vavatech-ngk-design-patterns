@@ -5,13 +5,19 @@ using System.Linq;
 
 namespace ProxyPattern
 {
-    public class CacheProductRepository
+    // Proxy
+    public class CacheProductRepository : IProductRepository
     {
         private IDictionary<int, Product> products;
 
-        public CacheProductRepository()
+        // Real Subject
+        private IProductRepository productRepository;
+
+        public CacheProductRepository(IProductRepository productRepository)
         {
             products = new Dictionary<int, Product>();
+
+            this.productRepository = productRepository;
         }
 
         public void Add(Product product)
@@ -23,12 +29,19 @@ namespace ProxyPattern
         {
             if (products.TryGetValue(id, out Product product))
             {
-                product.CacheHit++;
-
-                return product;
+                product.CacheHit++;                
             }
             else
-                return null;            
+            {
+                product = productRepository.Get(id);
+
+                if (product!=null)
+                {
+                    products.Add(product.Id, product);
+                }
+            }
+
+            return product;
         }
 
     }

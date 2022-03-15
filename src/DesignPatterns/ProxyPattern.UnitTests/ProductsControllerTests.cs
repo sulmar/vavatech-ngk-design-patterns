@@ -10,9 +10,7 @@ namespace ProxyPattern.UnitTests
         [TestInitialize]
         public void Init()
         {
-            productsController = new ProductsController(
-                   new DbProductRepository(),
-               new CacheProductRepository());
+            productsController = new ProductsController(new CacheProductRepository(new DbProductRepository()));
         }
 
         [TestMethod]

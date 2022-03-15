@@ -5,7 +5,15 @@ using System.Linq;
 
 namespace ProxyPattern
 {
-    public class DbProductRepository
+    // Subject
+    public interface IProductRepository
+    {
+        Product Get(int id);
+        void Add(Product product);
+    }
+
+    // Real Subject
+    public class DbProductRepository : IProductRepository
     {
         private readonly IDictionary<int, Product> products;
 
@@ -28,6 +36,13 @@ namespace ProxyPattern
             else
                 return null;
         }
+
+        public void Add(Product product)
+        {
+            products.Add(product.Id, product);
+        }
+
+        
     }
 
    
