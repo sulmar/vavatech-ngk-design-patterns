@@ -9,241 +9,232 @@ namespace FacadePattern
         {
             Console.WriteLine("Hello Facade Pattern!");
 
-
             WashMachineTest();
         }
 
         private static void WashMachineTest()
         {
-            // Wybieram program (steruje czasem oraz cyklem) 
-            // Ustawiam temperaturę
-            // Ustawiam prędkość wirowania
+            IWashMachineFactory washMachineFactory = new WashMachineFactory();
 
-            byte temperature = 40;
-            int rotationSpeed = 1200;
+            IWashMachine washMachine = new WashMachine(new Heater(), new Engine(), new Pump());
+            
+            washMachine.Start();
+        }
+    }
 
-            WashMachine washMachine = new WashMachine(new Heater(), new Engine(), new Pump());
+    public interface IWashMachineFactory
+    {
+        IWashMachine Create(WashKind kind);
+    }
 
-            bool quick = false;
+    public class WashMachineFactory : IWashMachineFactory
+    {
+        private void SportWashMachine(IWashMachine washMachine)
+        {
+            washMachine.SetTemperature(20);
+            washMachine.SetRotationSpeed(1200);
+            
+        }
 
+        private void EverydayWashMachine(IWashMachine washMachine)
+        {
+            washMachine.SetTemperature(30);
+            washMachine.SetRotationSpeed(900);
+            
+        }
 
-            if (quick)
+        public IWashMachine Create(WashKind kind)
+        {
+            IWashMachine washMachine = new WashMachine(new Heater(), new Engine(), new Pump());
+
+            switch (kind)
             {
-                // Włączenie blokady
-                washMachine.Locked = true;
-                Console.WriteLine("Włączenie blokady");
-
-                // pobiera wodę
-                washMachine.Pump.Direction = Direction.In;
-                washMachine.Pump.Start();
-
-                Thread.Sleep(TimeSpan.FromSeconds(1));
-
-                washMachine.Pump.Stop();
-
-                // podgrzewa wodę
-
-                int maxTemp = 30;
-
-                if (temperature> maxTemp)
-                {
-                    Console.WriteLine($"Błąd - nastawiona temperaturę większą od {maxTemp} st. C");
-                    return;
-                }
-
-                washMachine.Heater.Temperature = temperature;
-                washMachine.Heater.On();
-
-                // obraca bęben 
-
-                washMachine.Engine.RotationSpeed = 200;
-                washMachine.Engine.RotateRight();
-
-                Thread.Sleep(TimeSpan.FromSeconds(1));
-
-                washMachine.Engine.RotateLeft();
-
-                Thread.Sleep(TimeSpan.FromSeconds(1));
-
-                // zakończenie cyklu prania
-
-                washMachine.Engine.Stop();
-                washMachine.Engine.RotationSpeed = 0;
-
-                washMachine.Heater.Off();
-
-                // wypompowanie wody
-
-                washMachine.Pump.Direction = Direction.Out;
-                washMachine.Pump.Start();
-
-                washMachine.Pump.Direction = Direction.In;
-                washMachine.Pump.Start();
-
-
-                // Zwolnienie blokady
-                washMachine.Locked = false;
-                Console.WriteLine("Zwolnienie blokady");
+                case WashKind.Sport: SportWashMachine(washMachine); break;
+                case WashKind.Everyday: EverydayWashMachine(washMachine); break;
 
             }
-            else
-            {
-                // Włączenie blokady
-                washMachine.Locked = true;
-                Console.WriteLine("Włączenie blokady");
 
-                // pobiera wodę
-                washMachine.Pump.Direction = Direction.In;
-                washMachine.Pump.Start();
-
-                Thread.Sleep(TimeSpan.FromSeconds(10));
-
-                washMachine.Pump.Stop();
-
-                // podgrzewa wodę
-                washMachine.Heater.Temperature = temperature;
-                washMachine.Heater.On();
-
-                // obraca bęben 
-
-                washMachine.Engine.RotationSpeed = 100;
-                washMachine.Engine.RotateRight();
-
-                Thread.Sleep(TimeSpan.FromSeconds(5));
-
-                washMachine.Engine.RotateLeft();
-
-                Thread.Sleep(TimeSpan.FromSeconds(5));
-
-                // zakończenie cyklu prania
-
-                washMachine.Engine.Stop();
-                washMachine.Engine.RotationSpeed = 0;
-
-                washMachine.Heater.Off();
-
-                // wypompowanie wody
-
-                washMachine.Pump.Direction = Direction.Out;
-                washMachine.Pump.Start();
-
-                washMachine.Pump.Direction = Direction.In;
-                washMachine.Pump.Start();
-
-                // wirowanie
-                washMachine.Engine.RotationSpeed = rotationSpeed;
-                washMachine.Engine.RotateRight();
-
-                Thread.Sleep(TimeSpan.FromSeconds(5));
-
-                // płukanie
-
-                washMachine.Pump.Direction = Direction.In;
-                washMachine.Pump.Start();
-
-                Thread.Sleep(TimeSpan.FromSeconds(10));
-
-                washMachine.Pump.Stop();
-
-                washMachine.Pump.Direction = Direction.Out;
-                washMachine.Pump.Start();
-
-                // Zwolnienie blokady
-                washMachine.Locked = false;
-                Console.WriteLine("Zwolnienie blokady");
-            }
-
-
+            return washMachine;
         }
     }
 
-    public class WashMachine
+    public enum WashKind
     {
-        public WashMachine(Heater heater, Engine engine, Pump pump)
-        {
-            Heater = heater;
-            Engine = engine;
-            Pump = pump;
-            Locked = false;
-        }
+        Sport,
+        Everyday
+    }
+}
 
-        public Heater Heater { get; set; }
-        public Engine Engine { get; set; }
-        public Pump Pump { get; set; }
+// Facade
+public interface IWashMachine
+{
+    void SetTemperature(byte temperature);
+    void SetRotationSpeed(int rotationSpeed);
+    void Start();
+    void Stop();
+}
 
-        public bool Locked { get; set; }
+public class WashMachine : IWashMachine
+{
+    public WashMachine(Heater heater, Engine engine, Pump pump)
+    {
+        Heater = heater;
+        Engine = engine;
+        Pump = pump;
+        Locked = false;
     }
 
-    public class Pump
+    public Heater Heater { get; set; }
+    public Engine Engine { get; set; }
+    public Pump Pump { get; set; }
+
+    public bool Locked { get; set; }
+
+    public void SetRotationSpeed(int rotationSpeed)
     {
-        public bool Enabled { get; private set; }
-
-        public Direction Direction { get; set; }
-
-
-        public void Start()
-        {
-            Enabled = true;
-            Console.WriteLine($"Pump started {Direction}");
-        }
-
-        public void Stop()
-        {
-            Enabled = false;
-            Console.WriteLine("Pump stopped");
-        }
+        this.Engine.RotationSpeed = 200;
     }
 
-    public enum Direction
+    public void SetTemperature(byte temperature)
     {
-        In,
-        Out
+        int maxTemp = 30;
+
+        if (temperature > maxTemp)
+        {
+            Console.WriteLine($"Błąd - nastawiona temperaturę większą od {maxTemp} st. C");
+            return;
+        }
+
+        this.Heater.Temperature = temperature;
     }
 
-    public class Engine
+    public void Start()
     {
-        public bool Running { get; private set; }
+        // Włączenie blokady
+        this.Locked = true;
+        Console.WriteLine("Włączenie blokady");
 
-        public int RotationSpeed { get; set; }
+        // pobiera wodę
+        this.Pump.Direction = Direction.In;
+        this.Pump.Start();
 
-        public void RotateRight()
-        {
-            Running = true;
-            Console.WriteLine($"Engine rotating {RotationSpeed} right ");
-        }
+        Thread.Sleep(TimeSpan.FromSeconds(1));
 
-        public void RotateLeft()
-        {
-            Running = true;
-            Console.WriteLine($"Engine rotating {RotationSpeed} left");
-        }
+        this.Pump.Stop();
 
-        public void Stop()
-        {
-            Running = false;
-            Console.WriteLine("Engine stopped");
-        }
+        // podgrzewa wodę
+        this.Heater.On();
+
+        // obraca bęben 
+
+        this.Engine.RotateRight();
+
+        Thread.Sleep(TimeSpan.FromSeconds(1));
+
+        this.Engine.RotateLeft();
+
+        Thread.Sleep(TimeSpan.FromSeconds(1));
+
+        Stop();
+
+
     }
 
-    public class Heater
+    public void Stop()
     {
-        private bool heating;
+        // zakończenie cyklu prania
 
-        public byte Temperature { get; set; }
+        this.Engine.Stop();
+        this.Engine.RotationSpeed = 0;
 
-        public void On()
-        {
-            heating = true;
-            Console.WriteLine("Heater on");
-        }
+        this.Heater.Off();
 
-        public void Off()
-        {
-            heating = false;
-            Console.WriteLine("Heater off");
+        // wypompowanie wody
 
-        }
+        this.Pump.Direction = Direction.Out;
+        this.Pump.Start();
+
+
+        this.Pump.Stop();
+
+        // Zwolnienie blokady
+        this.Locked = false;
+        Console.WriteLine("Zwolnienie blokady");
 
 
     }
 }
+
+public class Pump
+{
+    public bool Enabled { get; private set; }
+
+    public Direction Direction { get; set; }
+
+
+    public void Start()
+    {
+        Enabled = true;
+        Console.WriteLine($"Pump started {Direction}");
+    }
+
+    public void Stop()
+    {
+        Enabled = false;
+        Console.WriteLine("Pump stopped");
+    }
+}
+
+public enum Direction
+{
+    In,
+    Out
+}
+
+public class Engine
+{
+    public bool Running { get; private set; }
+
+    public int RotationSpeed { get; set; }
+
+    public void RotateRight()
+    {
+        Running = true;
+        Console.WriteLine($"Engine rotating {RotationSpeed} right ");
+    }
+
+    public void RotateLeft()
+    {
+        Running = true;
+        Console.WriteLine($"Engine rotating {RotationSpeed} left");
+    }
+
+    public void Stop()
+    {
+        Running = false;
+        Console.WriteLine("Engine stopped");
+    }
+}
+
+public class Heater
+{
+    private bool heating;
+
+    public byte Temperature { get; set; }
+
+    public void On()
+    {
+        heating = true;
+        Console.WriteLine("Heater on");
+    }
+
+    public void Off()
+    {
+        heating = false;
+        Console.WriteLine("Heater off");
+
+    }
+
+
+}
+
