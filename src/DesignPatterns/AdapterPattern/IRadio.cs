@@ -6,42 +6,6 @@ using System.Threading.Tasks;
 
 namespace AdapterPattern
 {
-    public class IPhone
-    {
-        public float GetBateryLevel()
-        {
-            return 0.5f;
-        }
-    }
-
-    public class Android
-    {
-        public byte GetLevel()
-        {
-            return 50;
-        }
-    }
-
-    public interface ITarget
-    {
-        byte GetBateryLevel();        
-    }
-
-    public class IPhoneAdapter : IPhone, ITarget
-    {
-        byte ITarget.GetBateryLevel()
-        {            
-            return (byte) (base.GetBateryLevel() * 100);
-        }
-    }
-
-    public class AndroidAdapter : Android, ITarget
-    {
-        public byte GetBateryLevel()
-        {
-            return base.GetLevel();
-        }
-    }
 
 
 
