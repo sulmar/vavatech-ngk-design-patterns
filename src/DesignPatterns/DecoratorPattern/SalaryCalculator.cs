@@ -7,7 +7,7 @@ namespace DecoratorPattern
 {
     // Kalkulator płacowy 
     // Premia za nadgodziny
-    // Premia za oddanie każdego projektu
+    // Premia za oddanie każdego projektu (n-razy)
     // Premia za udział w szkoleniu ;-)
 
     public class SalaryCalculator
@@ -23,17 +23,11 @@ namespace DecoratorPattern
 
         public decimal CalculateSalary(Employee employee)
         {
-            // pensja zasadnicza
-            decimal salary = employee.GetSalary();
+            Employee decoratedEmployee = 
+                    new ProjectSalaryDecorator(bonusPerProject, 
+                        new OvertimeSalaryDecorator(amountPerHour, employee));
 
-            // premia za nadgodziny
-            salary += (decimal) employee.OvertimeSalary.TotalHours * amountPerHour;
-
-            // premia za oddanie każdego projektu
-            for (int i = 0; i < employee.NumberOfProjects; i++)
-            {
-                salary += bonusPerProject;
-            }
+            decimal salary = decoratedEmployee.GetSalary();
 
             // premia za udział w szkoleniu
             // etc. ...

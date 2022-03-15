@@ -2,6 +2,7 @@
 
 namespace DecoratorPattern
 {
+    // Abstract Component
     public abstract class Employee
     {
         public TimeSpan OvertimeSalary { get; set; }
