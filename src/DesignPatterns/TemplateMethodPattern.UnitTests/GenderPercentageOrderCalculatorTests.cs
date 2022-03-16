@@ -11,7 +11,7 @@ namespace TemplateMethodPattern.UnitTests
         [TestInitialize]
         public void Init()
         {
-            calculator = new GenderPercentageOrderCalculator( Gender.Female, 0.1m);
+            calculator = new GenderPercentageOrderCalculator( Gender.Female, 0.2m);
         }
 
         [TestMethod]
@@ -24,7 +24,7 @@ namespace TemplateMethodPattern.UnitTests
             decimal discount = calculator.CalculateDiscount(order);
 
             // Assert
-            Assert.AreEqual(10, discount);
+            Assert.AreEqual(20, discount);
 
         }
 
@@ -38,7 +38,7 @@ namespace TemplateMethodPattern.UnitTests
             decimal discount = calculator.CalculateDiscount(order);
 
             // Assert
-            Assert.AreEqual(0, discount);
+            Assert.AreEqual(10, discount);
 
         }
 

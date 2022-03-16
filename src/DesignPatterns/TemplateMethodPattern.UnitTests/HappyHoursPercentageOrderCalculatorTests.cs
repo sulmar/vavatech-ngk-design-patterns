@@ -12,7 +12,7 @@ namespace TemplateMethodPattern.UnitTests
         [TestInitialize]
         public void Init()
         {
-            calculator = new HappyHoursPercentageOrderCalculator(9, 15, 0.1m);
+            calculator = new HappyHoursPercentageOrderCalculator(TimeSpan.FromHours( 9), TimeSpan.FromHours( 15), 0.1m);
         }
 
         [TestMethod]
