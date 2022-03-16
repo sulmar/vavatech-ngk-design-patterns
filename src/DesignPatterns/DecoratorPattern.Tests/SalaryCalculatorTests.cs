@@ -1,5 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Linq;
+using System.Reflection;
 
 namespace DecoratorPattern.UnitTests
 {
@@ -28,10 +30,10 @@ namespace DecoratorPattern.UnitTests
             Gender gender = new Gender();
 
             // Act
-            var attributes = typeof(Gender).GetCustomAttributes(false);
+            var nameAttribute = gender.GetEnumAttribute<NameAttribute>();
 
             // Assert
-            // Assert.AreEqual("Kobieta", nameAttribute.Description);
+            Assert.AreEqual("Kobieta", nameAttribute.Description);
 
         }
 
