@@ -3,12 +3,28 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+    <ApplicationIcon />
+    <StartupObject />
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="Solution\**" />
     <EmbeddedResource Remove="Solution\**" />
     <None Remove="Solution\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="config.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="config.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Infrasttu\" />
   </ItemGroup>
 
 </Project>

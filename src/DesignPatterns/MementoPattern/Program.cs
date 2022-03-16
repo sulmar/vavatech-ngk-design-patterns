@@ -1,76 +1,37 @@
-﻿using MementoPattern.Exercise;
-using MementoPattern.Problem;
-using System;
+﻿using System;
+using System.Collections.Generic;
 
-namespace MementoPattern
+namespace MementoPattern.Problem
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello Memento Pattern!");
+            ConfigurationSnapshotTest();
 
-            ArticleTest();
-
-            AgreementTest();
         }
 
-        private static void ArticleTest()
+        private static void ConfigurationSnapshotTest()
         {
-            var article = new Article();
-            article.Content = "a";
-            article.Content = "b";
-            article.Content = "c";
-            
-            // TODO: Undo
+            IConfigurationRepository configurationRepository = new FileConfigurationRepository();
+
+            Configuration configuration = new Configuration(configurationRepository.Get());
+
+            ConfigurationCaretaker configurationCaretaker = new ConfigurationCaretaker(configurationRepository);
+
+            // Backup 
+            configurationCaretaker.SetState(configuration.CreateMemento());
+            Console.WriteLine(configuration);
+
+            // Change configuration
+            configuration.Content = System.Text.Encoding.UTF8.GetBytes("{'port': 5000}");
+            Console.WriteLine(configuration);
+
+            // Restore
+            configuration.SetMemento(configurationCaretaker.GetState());
+            Console.WriteLine(configuration);
         }
-
-        private static void AgreementTest()
-        {
-            Agreement agreement = new Agreement("Design Patterns", TimeSpan.FromDays(3), 1000);
-            // TODO: Save version #1            
-            
-            agreement.GiveDiscount(100);
-            // TODO: Save version #2            
-
-            // Save
-            agreement.Duration = TimeSpan.FromDays(4);
-            agreement.GiveDiscount(50);
-            // TODO: Save version #3
-
-            // TODO: Back to version #2
-
-            // TODO: Back to version #1
-
-            // TODO: Back to original
-
-        }
-
-        private static void PlayerTest()
-        {
-            Player player = new Player();
-
-            Console.WriteLine(player);
-
-            player.AddPoints(10);
-            player.Hit();
-            Console.WriteLine(player);
-
-            // TODO: Save checkpoint
-            
-            player.AddPoints(30);
-            player.Hit();
-            player.AddPoints(20);
-            player.Hit();
-            player.UpLevel();
-            Console.WriteLine(player);
-
-            // TODO: Rollback do checkpoint
-            
-            Console.WriteLine(player);
-
-        }
-
-
     }
+
+   
 }
