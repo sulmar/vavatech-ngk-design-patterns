@@ -6,33 +6,88 @@ using System.Threading.Tasks;
 
 namespace CommandPattern.Models
 {
-    public class BankAccount
+    public interface ICommand
     {
-        private decimal balance;
+        void Execute();
+        bool CanExecute();
+    }
 
-        private const decimal overdraftLimit = -500;
+    public class DepositCommand : ICommand
+    {
+        private readonly BankAccount account;
+        private readonly decimal amount;
 
-        public decimal GetBalance()
+        public DepositCommand(BankAccount account, decimal amount)
         {
-            return balance;
+            this.account = account;
+            this.amount = amount;
         }
 
-        public void Deposit(decimal amount)
+        public bool CanExecute()
         {
-            balance += amount;
+            return true;
         }
 
-        public void Withdraw(decimal amount)
+        public void Execute()
         {
-            if (balance - amount >= overdraftLimit)
+            account.Balance += amount;
+        }
+    }
+
+    public class WithdrawCommand : ICommand
+    {
+        private readonly BankAccount account;
+        private readonly decimal amount;
+
+        public WithdrawCommand(BankAccount account, decimal amount)
+        {
+            this.account = account;
+            this.amount = amount;
+        }
+
+        public bool CanExecute()
+        {
+            return account.Balance - amount >= BankAccount.OverdraftLimit;
+        }
+
+        public void Execute()
+        {
+            if (CanExecute())
             {
-                balance -= amount;
+                account.Balance -= amount;
             }
             else
             {
                 throw new ApplicationException();
             }
         }
+    }
+
+
+    public class BankAccount
+    {
+        public decimal Balance { get; set; }
+
+        public static decimal OverdraftLimit = -500;
+
+        public decimal OdliczProwizjeGetBalance()
+        {
+            OdliczProwizje();
+
+            return GetBalance();
+        }
+
+        public decimal GetBalance()
+        {
+            return Balance;
+        }
+
+        private void OdliczProwizje()
+        {
+            Balance -= -1m;
+        }
+
+
 
 
     }
