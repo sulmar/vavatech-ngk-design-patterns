@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 
 namespace ProxyPattern
@@ -20,103 +18,6 @@ namespace ProxyPattern
             FirstName = firstName;
 
             EntryDate = DateTime.Now;
-        }
-    }
-
-
-    // Subject    
-    public interface IImageRepository
-    {
-        Image Get(int personId);
-    }
-
-    // Real Subject
-    public class FileImageRepository : IImageRepository
-    {
-        public Image Get(int personId)
-        {
-            return Image.FromFile($@"Images\Image{personId}.jpg");
-        }
-    }
-
-
-    public class ProxyRedisImageRepository : IImageRepository
-    {
-        // dotnet add package StackExchange.Redis
-
-
-        public Image Get(int personId)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    // Proxy
-    public class ProxyImageRepository : IImageRepository
-    {
-        // Real Subject
-        private readonly IImageRepository imageRepository;
-
-        private IDictionary<int, Image> images;
-
-        public ProxyImageRepository(IImageRepository imageRepository)
-        {
-            this.imageRepository = imageRepository;
-
-            images = new Dictionary<int, Image>();
-        }
-
-        public Image Get(int personId)
-        {
-            if (images.TryGetValue(personId, out Image image))
-            {
-                return image;
-            }
-            else
-            {
-                image = imageRepository.Get(personId);
-
-                if (image!=null)
-                {
-                    images.Add(personId, image);
-                }
-
-                return image;
-            }
-
-        }
-    }
-
-
-
-    public class DbPersonRepository
-    {
-        private readonly IImageRepository _imageRepository;
-
-        public DbPersonRepository(IImageRepository imageRepository)
-        {
-            _imageRepository = imageRepository;
-        }
-
-        public Person Get(int id)
-        {
-            var people = new Dictionary<int, Person>()
-            {
-                { 1, new Person(1, "John") },
-                { 2, new Person(2, "Ann") },
-                { 3, new Person(3, "Bob") },
-            };
-
-            if (people.TryGetValue(id, out Person person))
-            {
-                person.Image = _imageRepository.Get(id);
-
-                return person;
-            }
-            else
-                return null;
-
-
         }
     }
 

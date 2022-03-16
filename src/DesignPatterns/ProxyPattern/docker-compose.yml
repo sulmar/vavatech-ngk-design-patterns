@@ -1,0 +1,8 @@
+﻿version: '3.7'
+
+services:  
+  redis_image_cache:
+    image: redis
+    container_name: imagecache
+    ports:
+      - "6379:6379"

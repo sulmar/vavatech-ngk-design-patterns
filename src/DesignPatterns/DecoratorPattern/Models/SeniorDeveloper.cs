@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Reflection;
 
 namespace DecoratorPattern
 {
@@ -48,6 +49,19 @@ namespace DecoratorPattern
         public bool Flag3 { get; set; }
         [ReadOnly(true)]
         public bool Flag4 { get; set; }
+    }
+
+    public static class EnumExtensions
+    {
+        public static T GetEnumAttribute<T>(this Enum enumValue)
+            where T : Attribute
+        {
+            var enumType = enumValue.GetType();
+            MemberInfo memberInfo = enumType.GetMember(enumValue.ToString())[0];
+            var attribute = memberInfo.GetCustomAttribute<T>();
+
+            return attribute;
+        }
     }
 
 }
