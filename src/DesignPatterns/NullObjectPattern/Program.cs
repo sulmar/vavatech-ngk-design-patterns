@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace NullObjectPattern
 {
@@ -10,37 +11,62 @@ namespace NullObjectPattern
 
             IProductRepository productRepository = new FakeProductRepository();
 
-            Product product = productRepository.Get(1);
+            ProductBase product = productRepository.Get(2);
 
             // Problem: Zawsze musimy sprawdzać czy obiekt nie jest pusty (null).
+            product.RateId(3);
 
-            if (product != null)
-            {
-                product.RateId(3);
-            }
         }
     }
 
     public interface IProductRepository
     {
-        Product Get(int id);
+        ProductBase Get(int id);
     }
 
     public class FakeProductRepository : IProductRepository
     {
-        public Product Get(int id)
+        private readonly IDictionary<int, Product> products = new Dictionary<int, Product>();
+
+        public FakeProductRepository()
         {
-            return null;
+            products.Add(2, new Product());
+            products.Add(3, new Product());
+        }
+
+        public ProductBase Get(int id)
+        {
+            if (products.TryGetValue(id, out Product product))
+            {
+                return product;
+            }
+            else
+                return new NullProduct();
         }
     }
 
-    public class Product
+    // Abstract Object
+    public abstract class ProductBase
     {
-        private int rate;
+        protected int rate;
+        public abstract void RateId(int rate);
+    }
 
-        public void RateId(int rate)
+    // Real Object
+    public class Product : ProductBase
+    {
+        public override void RateId(int rate)
         {
             this.rate = rate;
+        }
+    }
+
+    // Null Object
+    public class NullProduct : ProductBase
+    {
+        public override void RateId(int rate)
+        {
+            // nic nie rób
         }
 
     }
