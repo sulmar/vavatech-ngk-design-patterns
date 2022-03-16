@@ -10,12 +10,18 @@ namespace StrategyPattern.UnitTests
     [TestClass]
     public class HappyHoursPercentageOrderCalculatorTests
     {
-        private HappyHoursPercentageOrderCalculator calculator;
+        private OrderCalculator calculator;
 
         [TestInitialize]
         public void Init()
         {
-            calculator = new HappyHoursPercentageOrderCalculator(TimeSpan.Parse("09:00"), TimeSpan.Parse("15:00"), 0.1m);
+            ICanDiscountStrategy canDiscountStrategy = new HappyHoursCanDiscountStrategy(
+                TimeSpan.Parse("09:00"), 
+                TimeSpan.Parse("15:00"));
+
+            IDiscountStrategy discountStrategy = new PercentageDiscountStrategy(0.1m);
+
+            calculator = new OrderCalculator(canDiscountStrategy, discountStrategy);
         }
 
         [TestMethod]
