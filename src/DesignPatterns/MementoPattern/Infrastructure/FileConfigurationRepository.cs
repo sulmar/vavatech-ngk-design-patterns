@@ -1,7 +1,8 @@
 ﻿using System.IO;
 
-namespace MementoPattern.Problem
+namespace MementoPattern
 {
+    // Concrete Repository
     public class FileConfigurationRepository : IConfigurationRepository
     {
         private string filename = "config.txt";

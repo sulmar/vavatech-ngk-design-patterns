@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace MementoPattern.Problem
+namespace MementoPattern
 {
     public class Configuration
     {
@@ -44,7 +44,22 @@ namespace MementoPattern.Problem
         }
     }
 
-    public class ConfigurationCaretaker
+
+    // Abstract Caretaker
+    public interface ICaretaker<TMemento>
+    {
+        void SetState(TMemento memento);
+        TMemento GetState();
+    }
+
+ 
+    public interface IConfigurationCaretaker : ICaretaker<ConfigurationMemento>
+    {
+
+    }
+
+    // Concrete Caretaker
+    public class ConfigurationCaretaker : IConfigurationCaretaker
     {
         private readonly IConfigurationRepository configurationRepository;
 
@@ -64,6 +79,5 @@ namespace MementoPattern.Problem
             return new ConfigurationMemento(configurationRepository.Get());
         }
     }
-
 
 }
