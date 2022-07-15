@@ -73,7 +73,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdapterPattern.UnitTests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommandPattern.UnitTests", "CommandPattern.UnitTests\CommandPattern.UnitTests.csproj", "{394BB859-CA66-4BFE-A2D7-C63C486F137E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MementoPattern.UnitTests", "MementoPattern.UnitTests\MementoPattern.UnitTests.csproj", "{440FD2BD-3F2C-46BA-A97F-B90D2C990609}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MementoPattern.UnitTests", "MementoPattern.UnitTests\MementoPattern.UnitTests.csproj", "{440FD2BD-3F2C-46BA-A97F-B90D2C990609}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -250,6 +250,7 @@ Global
 		{1B5E8C46-8179-4A76-8D55-799A22F214CA} = {F2386B77-C42E-43C8-8A89-C1DA19D3DFCA}
 		{18D3E0A8-062F-40D7-9C4C-77353A3E7072} = {C3AACDBB-31B7-423D-8FA9-C41E6C039CAB}
 		{394BB859-CA66-4BFE-A2D7-C63C486F137E} = {AE8F46A4-887F-4B91-99AD-A883344408B6}
+		{440FD2BD-3F2C-46BA-A97F-B90D2C990609} = {AE8F46A4-887F-4B91-99AD-A883344408B6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AC97C506-DE41-412B-BB0D-1ECD765DD65D}
