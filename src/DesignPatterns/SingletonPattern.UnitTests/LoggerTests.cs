@@ -20,7 +20,7 @@ namespace SingletonPattern.UnitTests
         }
 
         [TestMethod]
-        public void Create_SingletonMessageService_ShouldBeTheInstance()
+        public void Create_SingletonMessageService_ShouldBeTheSameInstance()
         {
             // Arrange 
 
