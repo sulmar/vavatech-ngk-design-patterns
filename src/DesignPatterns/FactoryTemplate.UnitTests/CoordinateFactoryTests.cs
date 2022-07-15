@@ -8,7 +8,7 @@ namespace FactoryTemplate.UnitTests
     public class CoordinateFactoryTests
     {
         [TestMethod]
-        public void Create_FromWkt_ShouldReturnsCoordinate()
+        public void NewFromWkt_ValidWkt_ShouldReturnsCoordinate()
         {
             // Arrange
             string wkt = "POINT (52 28)";
@@ -22,7 +22,7 @@ namespace FactoryTemplate.UnitTests
         }
 
         [TestMethod]
-        public void Create_FromGeoJson_ShouldReturnsCoordinate()
+        public void NewFromGeoJson_ValidGeoJson_ShouldReturnsCoordinate()
         {
             // Arrange
             string geojson = @"{
