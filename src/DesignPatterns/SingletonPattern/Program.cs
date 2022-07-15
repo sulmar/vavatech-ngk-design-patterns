@@ -41,14 +41,16 @@ namespace SingletonPattern
         {
             // Install-Package Microsoft.Extensions.DependencyInjection
             IServiceCollection services = new ServiceCollection();
+            services.AddTransient<MessageService>();
+            services.AddTransient<PrintService>();
             services.AddSingleton<Logger>();
 
             var serviceProvider  = services.BuildServiceProvider();
 
-            var logger1 = serviceProvider.GetRequiredService<Logger>();
-            var logger2 = serviceProvider.GetRequiredService<Logger>();
+            var messageService = serviceProvider.GetRequiredService<MessageService>();
+            var printService = serviceProvider.GetRequiredService<PrintService>();
 
-            if (ReferenceEquals(logger1, logger2))
+            if (ReferenceEquals(messageService.logger, printService.logger))
             {
                 Console.WriteLine("The same instances");
             }
