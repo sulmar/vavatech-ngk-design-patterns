@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace SingletonPattern.UnitTests
@@ -13,6 +14,26 @@ namespace SingletonPattern.UnitTests
             // Act
             MessageService messageService = new MessageService(Logger.Instance);
             PrintService printService = new PrintService(Logger.Instance);
+
+            // Assert
+            Assert.AreSame(messageService.logger, printService.logger, "Different instances");
+
+        }
+
+        [TestMethod]
+        public void Create_CallTwiceIoC_ShouldBeTheSameInstance()
+        {
+            // Arrange
+            IServiceCollection services = new ServiceCollection();
+            services.AddTransient<MessageService>();
+            services.AddTransient<PrintService>();
+            services.AddSingleton<Logger>();
+
+            var serviceProvider = services.BuildServiceProvider();
+
+            // Act
+            var messageService = serviceProvider.GetRequiredService<MessageService>();
+            var printService = serviceProvider.GetRequiredService<PrintService>();
 
             // Assert
             Assert.AreSame(messageService.logger, printService.logger, "Different instances");
