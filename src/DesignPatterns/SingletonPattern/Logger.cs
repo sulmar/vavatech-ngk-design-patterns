@@ -13,7 +13,7 @@ namespace SingletonPattern
             sw.WriteLine($"{DateTime.Now} {message}");
         }
 
-        protected Logger()
+        public Logger()
         {
 
         }

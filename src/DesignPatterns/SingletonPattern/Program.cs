@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Threading.Tasks;
 
 namespace SingletonPattern
@@ -9,7 +10,9 @@ namespace SingletonPattern
         {
             Console.WriteLine("Hello Singleton Pattern!");
 
-           // LoggerTest();
+            LoggerIoCTest();
+
+            LoggerTest();
 
             LoadBalancerTest();
 
@@ -18,13 +21,34 @@ namespace SingletonPattern
 
         private static void LoggerTest()
         {
-            MessageService messageService = new MessageService();
-            PrintService printService = new PrintService();
+            MessageService messageService = new MessageService(Logger.Instance);
+            PrintService printService = new PrintService(Logger.Instance);
             messageService.Send("Hello World!");
             printService.Print("Hello World!", 3);
 
             
             if (ReferenceEquals(messageService.logger, printService.logger))
+            {
+                Console.WriteLine("The same instances");
+            }
+            else
+            {
+                Console.WriteLine("Different instances");
+            }
+        }
+
+        private static void LoggerIoCTest()
+        {
+            // Install-Package Microsoft.Extensions.DependencyInjection
+            IServiceCollection services = new ServiceCollection();
+            services.AddSingleton<Logger>();
+
+            var serviceProvider  = services.BuildServiceProvider();
+
+            var logger1 = serviceProvider.GetRequiredService<Logger>();
+            var logger2 = serviceProvider.GetRequiredService<Logger>();
+
+            if (ReferenceEquals(logger1, logger2))
             {
                 Console.WriteLine("The same instances");
             }

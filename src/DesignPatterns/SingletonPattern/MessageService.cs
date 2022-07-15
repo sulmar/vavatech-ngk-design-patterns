@@ -13,7 +13,13 @@
 
         public MessageService()
         {
-            logger = Logger.Instance;
+
+        }
+
+        public MessageService(Logger logger)
+            : this()
+        {
+            this.logger = logger;
         }
 
         public void Send(string message)
