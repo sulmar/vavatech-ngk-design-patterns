@@ -72,14 +72,17 @@ namespace BridgePattern
 
         public override void SwitchOn()
         {
+            Console.WriteLine($"Switch On by IR");
             ledTv.SwitchOn();
         }
         public override void SwitchOff()
         {
+            Console.WriteLine($"Switch Off by IR");
             ledTv.SwitchOff();
         }
         public override void SetChannel(byte channelNumber)
         {
+            Console.WriteLine($"Set Channel by IR");
             ledTv.SetChannel(channelNumber);
         }
     }
@@ -92,14 +95,17 @@ namespace BridgePattern
 
         public override void SwitchOn()
         {
+            Console.WriteLine($"Switch On by BT");
             ledTv.SwitchOn();
         }
         public override void SwitchOff()
         {
+            Console.WriteLine($"Switch Off by BT");
             ledTv.SwitchOff();
         }
         public override void SetChannel(byte channelNumber)
         {
+            Console.WriteLine($"Set Channel by BT");
             ledTv.SetChannel(channelNumber);
         }
     }
