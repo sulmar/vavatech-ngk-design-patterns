@@ -1,26 +1,33 @@
-﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.ObjectModel;
 
-namespace VisitorPattern
+namespace VisitorPattern.UnitTests
 {
-    class Program
+
+    [TestClass]
+    public class HtmlVisitorTests
     {
-        static void Main(string[] args)
+        [TestMethod]
+        public void Output_Form_ShouldReturnsHtml()
         {
-            Console.WriteLine("Hello Visitor Pattern!");
+            // Arrange
+
+            const string expected = "<html><title>Design Patterns</title><body><span>Person</span><span>FirstName</span><input type='text' value='John'></input><span>IsAdult</span><input type='checkbox' value='true'></input><button><img src='save.png'/>Submit</button></body></html>";
 
             Form form = Get();
 
             IVisitor visitor = new HtmlVisitor();
-            
+
+            // Act
             form.Accept(visitor);
 
-            string html = visitor.Output;
 
-            System.IO.File.WriteAllText("index.html", html);
+            // Assert
+            Assert.AreEqual(expected, visitor.Output);
+
         }
 
-        public static Form Get()
+        private static Form Get()
         {
             Form form = new Form
             {
@@ -40,5 +47,4 @@ namespace VisitorPattern
             return form;
         }
     }
-
 }
